@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        
+        <title>Login Page</title>
+        
+        <style>
+        
+            @import url('https://fonts.googleapis.com/css2?family=Itim&family=Roboto&display=swap');
+            
+            .body{
+                position: fixed;
+                overflow-y: scroll;
+                width: 100%;
+                top: -20px;
+                left: -20px;
+                right: -40px;
+                bottom: -40px;
+                width: auto;
+                height: auto;
+                background-image: url(https://carsalesbase.com/wp-content/uploads/2019/06/Kia-lineup.jpg);
+                /*background-image: url(https://assets1.dxc.technology/robotic_drive/images/Aerial_View_of_AD_car__color__1_.png);*/
+                background-size: cover;
+                background-attachment: fixed;
+                -webkit-filter: blur(0px);
+            }
+            
+            .header{
+                position: absolute;
+                top: calc(50% - 121px);
+                left: calc(50% - 300px);   
+                font-family: 'Itim', cursive;
+                color: #ffffff;
+                font-size: 30px;
+            }
+            
+            .header div{
+                float: left;
+                color: #ffffff;
+                font-family: 'Roboto', sans-serif;
+                font-size: 40px;
+                font-weight: 200;
+            }
+            
+            /*.header div span{
+                color: chocolate !important;
+            }*/
+            
+            .login{
+                position: absolute;
+                top: calc(50% - 75px);
+                left: calc(50% - 50px);   
+                height: 150px;
+                width: 350px;
+                padding: 10px;
+            }
+            
+            .login input [type=text]{
+                width: 250px;
+                height: 30px;
+                border: lpx solid rgba(0,0,0,0.6);
+                border-radius: 2px;
+                color: #000000;
+                font-family: 'Roboto', sans-serif;
+                font-size: 18px;
+                font-weight: 400;
+                padding: 5px;
+                background: transparent;
+            }
+            
+            .login input [type=password]{
+                width: 250px;
+                height: 30px;
+                border: lpx solid rgba(217,217,217,0.6);
+                border-radius: 2px;
+                color: #000000;
+                font-family: 'Roboto', sans-serif;
+                font-size: 18px;
+                font-weight: 400;
+                padding: 5px;
+                background: transparent;
+            }
+            
+            .login input [type=button]{
+                width: 260px;
+                height: 35px;
+                border: lpx solid rgba(217,217,217,0.6);
+                border-radius: 2px;
+                cursor: pointer;
+                color: #a6a6a6;
+                font-family: 'Roboto', sans-serif;
+                font-size: 18px;
+                font-weight: 400;
+                padding: 6px;
+                background: transparent;
+            }
+            
+            .login input[type=button]:hover{
+                opacity: 0.8;
+            }
+            
+            .login input[type=button]:active{
+                opacity: 0.6;
+            }
+            
+            .login input[type=text]:focus{
+                outline: none;
+                border: 1px solid rgba (217,217,217,0.9);
+            }
+            
+            .login input[type=password]:focus{
+                outline: none;
+                border: 1px solid rgba (217,217,217,0.9);
+            }
+            
+            .login input [type=button]:focus{
+                outline: none;
+            }
+            
+            ::-webkit-input-placeholder{
+                color: rgba(217,217,217,0.6);
+            }
+            
+            ::-moz-input-placeholder{
+                color: rgba(217,217,217,0.6);
+            }
+        
+        </style>
+    </head>
+    
+    <body oncontextmenu="return false">
+    
+        <div class="body"></div>
+            <div class="grad"></div>
+            <div class="header">
+                <h1>Welcome!</h1>
+            </div>
+            <br>
+            <form name="login">
+            <div class="login">
+                <input type="text" placeholder="Username" name="givenID"><br>
+                <input type="password" placeholder="Password" name="givenPW"><br>
+                <input type="button" onclick="check(this.form)" value="Login"/>
+            </div>
+            </form>
+        
+        <script language="javascript">
+            function check(form){
+                if(form.givenID.value == "user" && form.givenPW.value == "password"){
+                    //window.open('https://www....')
+                    
+                    alert("Successful login!")
+                }
+                else{
+                    alert("The username and/or password are incorrect!")
+                }
+            }
+        </script>       
+</body>
+</html>
