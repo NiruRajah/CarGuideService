@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CarServiceGuideAPI.Models
+namespace CarGuideServiceAPI.Models
 {
     [BsonIgnoreExtraElements]
     public class Shipwreck
