@@ -7,9 +7,9 @@ namespace CarGuideServiceAPI.Models
 {
     public class VehicleReview
     {
-        public int ReviewId { get; set; }
+        public object ReviewId { get; set; }
 
-        public int VehicleId { get; set; }
+        public object VehicleId { get; set; }
 
         public double FuelEfficiency { get; set; }
 

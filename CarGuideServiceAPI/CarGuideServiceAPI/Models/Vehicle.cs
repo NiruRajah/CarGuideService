@@ -7,7 +7,7 @@ namespace CarGuideServiceAPI.Models
 {
     public class Vehicle
     {
-        public int VId { get; set; }
+        public object Id { get; set; }
 
         public int Year { get; set; }
 
