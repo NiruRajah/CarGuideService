@@ -125,11 +125,59 @@
             ::-moz-input-placeholder{
                 color: rgba(217,217,217,0.6);
             }
+
+            .ApiLink{
+                position: absolute;
+                top: calc(50% - -50px);
+                left: calc(50% - 45px);   
+                height: 200px;
+                width: 500px;
+                padding: 5px;
+            }
+
+            .ApiLink input [type=text]{
+                width: 200px;
+                height: 20px;
+                border: lpx solid rgba(0,0,0,0.6);
+                border-radius: 2px;
+                color: #000000;
+                font-family: 'Roboto', sans-serif;
+                font-size: 18px;
+                font-weight: 400;
+                padding: 5px;
+                background: transparent;
+            }
+
+            .ApiLink input [type=button]{
+                width: 260px;
+                height: 35px;
+                border: lpx solid rgba(217,217,217,0.6);
+                border-radius: 2px;
+                cursor: pointer;
+                color: #a6a6a6;
+                font-family: 'Roboto', sans-serif;
+                font-size: 18px;
+                font-weight: 400;
+                padding: 4px;
+                background: transparent;
+            }
         
         </style>
+
+        <script type = "text/javascript">
+        function firstfunction() {alert("Java Script number 1 triggered");}
+        function secondfunction() {alert("Java Script number 2 triggered");}
+        </script>  
     </head>
     
     <body oncontextmenu="return false">
+        
+    <form id="apiGetter" action="API.php" method="post">
+        <h1>Manufacturer's country checker</h1>
+        <label for="Country">Enter a country:</label>
+        <input type="text" id="Country" name="Country" required><br>
+        <button type="submit">Send given country</button>
+    </form>
     
         <div class="body"></div>
             <div class="grad"></div>
@@ -143,7 +191,11 @@
                 <input type="password" placeholder="Password" name="givenPW"><br>
                 <input type="button" onclick="check(this.form)" value="Login"/>
             </div>
+
             </form>
+
+            
+            
         
         <script language="javascript">
             function check(form){
@@ -156,6 +208,6 @@
                     alert("The username and/or password are incorrect!")
                 }
             }
-        </script>       
+        </script>
 </body>
 </html>
