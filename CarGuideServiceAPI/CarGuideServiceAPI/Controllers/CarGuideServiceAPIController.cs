@@ -30,11 +30,18 @@ namespace CarGuideServiceAPI.Controllers
         public ActionResult<List<Shipwreck>> Get() =>
             _carGuideAPIService.Get();*/
 
-        [HttpGet("vehicle")]
+        [HttpGet("vehicles/all")]
         public ActionResult<List<Vehicle>> GetVehicles() => _carGuideAPIService.GetAllVehicles();
 
-        [HttpPost("vehicle")]
-        public ActionResult<Vehicle> Create(Vehicle vehicle) =>_carGuideAPIService.CreateVehicle(vehicle);
+        [HttpPost("vehicles")]
+        public ActionResult<Vehicle> CreateVehicle(Vehicle vehicle) =>_carGuideAPIService.CreateVehicle(vehicle);
+
+        [HttpPut("vehicles")]
+        public ActionResult<Vehicle> UpdateVehicle(Vehicle vehicle) => _carGuideAPIService.UpdateVehicle(vehicle);
+
+        [HttpDelete("vehicles")]
+        public ActionResult<Vehicle> DeleteVehicle(Vehicle vehicle) => _carGuideAPIService.RemoveVehicle(vehicle);
+
 
         /*
          [HttpGet]

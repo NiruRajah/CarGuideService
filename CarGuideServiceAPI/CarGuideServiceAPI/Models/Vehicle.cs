@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +9,9 @@ namespace CarGuideServiceAPI.Models
 {
     public class Vehicle
     {
-        public object Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         public int Year { get; set; }
 
@@ -23,7 +27,7 @@ namespace CarGuideServiceAPI.Models
 
         public PriceRange PriceRange { get; set; }
 
-        public List<VehicleReview> VehicleReview { get; set; }
+        //public List<VehicleReview> VehicleReview { get; set; }
 
         public double FuelEfficiency { get; set; }
 
