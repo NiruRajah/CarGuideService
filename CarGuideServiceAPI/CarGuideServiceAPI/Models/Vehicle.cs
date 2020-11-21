@@ -20,7 +20,7 @@ namespace CarGuideServiceAPI.Models
         public string Model { get; set; }
 
         public LuxuryLevel LuxuryLevel { get; set; }
-
+        
         public VehicleSize Size { get; set; }
 
         public VehicleType Type { get; set; }

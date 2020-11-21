@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarGuideServiceAPI.Models
 {
-    public class VehicleReview
+    public class RequestedVehicleCriterias
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -15,9 +15,13 @@ namespace CarGuideServiceAPI.Models
 
         public int Year { get; set; }
 
-        public string Make { get; set; }
+        public LuxuryLevel LuxuryLevel { get; set; }
 
-        public string Model { get; set; }
+        public VehicleSize Size { get; set; }
+
+        public VehicleType Type { get; set; }
+
+        public PriceRange PriceRange { get; set; }
 
         public double FuelEfficiency { get; set; }
 

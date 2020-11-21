@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CarGuideServiceAPI.Models
 {
     [BsonIgnoreExtraElements]
-    public class Shipwreck
+    public class Shipwreck //Ignore this entire page, useless to our project. Only here for testing purposes
     {
         public Object Id { get; set; }
         

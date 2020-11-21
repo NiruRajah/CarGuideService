@@ -37,6 +37,9 @@ namespace CarGuideServiceAPI.Services
 
         public List<Vehicle> GetAllVehicles() => _vehicles.Find(v => true).ToList();
 
+        public Vehicle GetVehicle(string id) =>
+            _vehicles.Find(v => v.Id == id).FirstOrDefault();
+
         public Vehicle CreateVehicle(Vehicle vehicle)
         {
             _vehicles.InsertOne(vehicle);
@@ -73,13 +76,6 @@ namespace CarGuideServiceAPI.Services
             return vehicleReview;
         }
 
-        public VehicleReview RemoveVehicleReview(VehicleReview vehicleReview)
-        {
-            _vehicleReviews.DeleteOne(v => v.Id == vehicleReview.Id);
-            return vehicleReview;
-        }
-            
-
         public string RemoveVehicleReview(string id)
         {
             _vehicleReviews.DeleteOne(v => v.Id == id);
@@ -91,7 +87,7 @@ namespace CarGuideServiceAPI.Services
             _users.Find(u => true).ToList();
 
         public User GetUser(string userName) =>
-            _users.Find(u => u.UserName == userName).FirstOrDefault();
+            _users.Find(u => u.UserName.Equals(userName)).FirstOrDefault();
 
         public User CreateUser(User user)
         {
@@ -101,7 +97,7 @@ namespace CarGuideServiceAPI.Services
 
         public string RemoveUser(string userName)
         {
-            _users.DeleteOne(u => u.UserName == userName);
+            _users.DeleteOne(u => u.UserName.Equals(userName));
             return userName;
 
         }
