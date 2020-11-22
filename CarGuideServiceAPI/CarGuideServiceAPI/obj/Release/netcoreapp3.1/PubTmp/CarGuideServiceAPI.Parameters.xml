@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="CarGuideServiceAPI20201105030004" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\Nirusan\\source\\repos\\CarGuideServiceAPI\\CarGuideServiceAPI\\obj\\Release\\netcoreapp3\.1\\PubTmp\\Out\\$" />
-  </parameter>
-</parameters>

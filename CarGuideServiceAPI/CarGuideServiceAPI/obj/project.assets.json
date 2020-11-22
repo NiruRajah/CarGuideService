@@ -4906,11 +4906,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Nirusan\\source\\repos\\CarGuideServiceAPI\\CarGuideServiceAPI\\CarGuideServiceAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Nirusan\\Documents\\GitKraken-GitHub\\CarGuideService\\CarGuideServiceAPI\\CarGuideServiceAPI\\CarGuideServiceAPI.csproj",
       "projectName": "CarGuideServiceAPI",
-      "projectPath": "C:\\Users\\Nirusan\\source\\repos\\CarGuideServiceAPI\\CarGuideServiceAPI\\CarGuideServiceAPI.csproj",
+      "projectPath": "C:\\Users\\Nirusan\\Documents\\GitKraken-GitHub\\CarGuideService\\CarGuideServiceAPI\\CarGuideServiceAPI\\CarGuideServiceAPI.csproj",
       "packagesPath": "C:\\Users\\Nirusan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Nirusan\\source\\repos\\CarGuideServiceAPI\\CarGuideServiceAPI\\obj\\",
+      "outputPath": "C:\\Users\\Nirusan\\Documents\\GitKraken-GitHub\\CarGuideService\\CarGuideServiceAPI\\CarGuideServiceAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

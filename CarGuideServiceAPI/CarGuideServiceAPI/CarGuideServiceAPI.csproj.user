@@ -3,8 +3,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>CarServiceGuideAPI</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>CarGuideServiceAPI20201105030004 - Web Deploy</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
