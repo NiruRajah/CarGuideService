@@ -46,16 +46,9 @@ namespace CarGuideServiceAPI.Services
             return vehicle;
         }
 
-        public Vehicle UpdateVehicle(Vehicle vehicle)
+        public Vehicle UpdateVehicle(string id, Vehicle vehicle)
         {
-            _vehicles.ReplaceOne(v => v.Id == vehicle.Id, vehicle);
-            return vehicle;
-        }
-            
-
-        public Vehicle RemoveVehicle(Vehicle vehicle)
-        {
-            _vehicles.DeleteOne(v => v.Id == vehicle.Id);
+            _vehicles.ReplaceOne(v => v.Id == id, vehicle);
             return vehicle;
         }
             
@@ -69,6 +62,9 @@ namespace CarGuideServiceAPI.Services
 
         public List<VehicleReview> GetAllVehicleReviews() =>
             _vehicleReviews.Find(v => true).ToList();
+
+        public VehicleReview GetVehicleReview(string id) =>
+            _vehicleReviews.Find(v => v.Id == id).FirstOrDefault();
 
         public VehicleReview CreateVehicleReview (VehicleReview vehicleReview)
         {
@@ -92,6 +88,12 @@ namespace CarGuideServiceAPI.Services
         public User CreateUser(User user)
         {
             _users.InsertOne(user);
+            return user;
+        }
+
+        public User UpdateUser(string username, User user)
+        {
+            _users.ReplaceOne(u => u.UserName.Equals(username), user);
             return user;
         }
 

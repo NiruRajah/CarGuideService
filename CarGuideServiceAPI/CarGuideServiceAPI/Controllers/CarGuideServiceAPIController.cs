@@ -30,6 +30,9 @@ namespace CarGuideServiceAPI.Controllers
         public ActionResult<List<Shipwreck>> Get() =>
             _carGuideAPIService.Get();*/
 
+
+        #region Vehicle
+
         [HttpGet("vehicle/all")]
         public ActionResult<List<Vehicle>> GetAllVehicles() => _carGuideAPIService.GetAllVehicles();
 
@@ -39,11 +42,55 @@ namespace CarGuideServiceAPI.Controllers
         [HttpPost("vehicle")]
         public ActionResult<Vehicle> CreateVehicle(Vehicle vehicle) =>_carGuideAPIService.CreateVehicle(vehicle);
 
-        [HttpPut("vehicle")]
-        public ActionResult<Vehicle> UpdateVehicle(Vehicle vehicle) => _carGuideAPIService.UpdateVehicle(vehicle);
+        [HttpPut("vehicle/{id}")]
+        public ActionResult<Vehicle> UpdateVehicle(string id, Vehicle vehicle) => _carGuideAPIService.UpdateVehicle(id, vehicle);
 
-        [HttpDelete("vehicle")]
-        public ActionResult<Vehicle> DeleteVehicle(Vehicle vehicle) => _carGuideAPIService.RemoveVehicle(vehicle);
+        [HttpDelete("vehicle/{id}")]
+        public ActionResult<string> DeleteVehicle(string id) => _carGuideAPIService.RemoveVehicle(id);
+
+        #endregion Vehicle
+
+
+        #region VehicleReview
+
+        [HttpGet("vehiclereview/all")]
+        public ActionResult<List<VehicleReview>> GetAllVehicleReviews() => _carGuideAPIService.GetAllVehicleReviews();
+
+        [HttpGet("vehiclereview/{id}")]
+        public ActionResult<VehicleReview> GetVehicleReview(string id) => _carGuideAPIService.GetVehicleReview(id);
+
+        [HttpPost("vehiclereview")]
+        public ActionResult<VehicleReview> CreateVehicleReview(VehicleReview vehicleReview) => 
+            _carGuideAPIService.CreateVehicleReview(vehicleReview);
+
+        [HttpDelete("vehiclereview/{id}")]
+        public ActionResult<string> DeleteVehicleReview(string id) => 
+            _carGuideAPIService.RemoveVehicleReview(id);
+
+        #endregion VehicleReview
+
+
+        #region User
+        [HttpGet("user")]
+        public ActionResult<List<User>> GetAllUsers() => _carGuideAPIService.GetAllUsers();
+
+        [HttpGet("user/{username}")]
+        public ActionResult<User> GetUser(string username) => _carGuideAPIService.GetUser(username);
+
+        [HttpPost("user")]
+        public ActionResult<User> CreateUser(User user) => _carGuideAPIService.CreateUser(user);
+
+        [HttpPut("user/{username}")]
+        public ActionResult<User> UpdateUser(string username, User user) => _carGuideAPIService.UpdateUser(username, user);
+
+        [HttpDelete("user/{username}")]
+        public ActionResult<string> RemoveUser(string username) => _carGuideAPIService.RemoveUser(username);
+
+        #endregion User
+
+
+
+
 
 
         /*
