@@ -8,6 +8,11 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using CarGuideServiceAPI.Services;
 using CarGuideServiceAPI.Models;
+using System.Net.Http;
+using System.Net;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
 
 namespace CarGuideServiceAPI.Controllers
 {
@@ -204,8 +209,37 @@ namespace CarGuideServiceAPI.Controllers
 
             return "Incorrect Username or Password";
         }
-            
 
+        [HttpGet("dataapi")]
+        public async Task<string> CallDataAPI(string year, string make, string model, string mileage)
+        {
+            string url = "https://api.carmd.com/v3.0/maint?year=" + year + "&make=" + make + "&model=" + model + "&mileage=" + mileage;
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(url),
+                    //Content = new StringContent(JsonConvert.SerializeObject())
+                };
+                string contentType = "application/json";
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+                var authPassword = "ZjM3YmY0OGMtNzJkNy00MmY0LTgzYTQtZGIyY2UxNjdmZWRj";
+                client.DefaultRequestHeaders.Add("Authorization", String.Format("Basic {0}", authPassword));
+                var partnerTokenValue = "5e6583fe22c146f98a7a74a86c57351a";
+                client.DefaultRequestHeaders.Add("partner-token", partnerTokenValue);
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                
+                //string jsonString = JsonConvert.DeserializeObject<string>(responseBody);
+
+                var jObj = JObject.Parse(responseBody);
+                string jObjString = jObj.ToString();
+                return jObjString;
+            }
+        }
 
 
         /*
