@@ -211,7 +211,7 @@ namespace CarGuideServiceAPI.Controllers
         }
 
         [HttpGet("dataapi")]
-        public async Task<string> CallDataAPI(string year, string make, string model, string mileage)
+        public async Task<string> CallDataAPIMaintenanceInfo(string year, string make, string model, string mileage)
         {
             string url = "https://api.carmd.com/v3.0/maint?year=" + year + "&make=" + make + "&model=" + model + "&mileage=" + mileage;
             using (var client = new HttpClient())
