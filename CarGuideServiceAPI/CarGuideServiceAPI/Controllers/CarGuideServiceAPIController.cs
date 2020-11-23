@@ -35,9 +35,34 @@ namespace CarGuideServiceAPI.Controllers
 
         [HttpGet("vehicle/all")]
         public ActionResult<List<Vehicle>> GetAllVehicles() => _carGuideAPIService.GetAllVehicles();
-
+        /*
         [HttpGet("vehicle/{id}")]
-        public ActionResult<Vehicle> GetVehicle(string id) => _carGuideAPIService.GetVehicle(id);
+        public ActionResult<Vehicle> GetVehicle(string id) => _carGuideAPIService.GetVehicle(id);*/
+
+        [HttpGet("vehicle")]
+        public ActionResult<Vehicle> GetVehicle(int year, string make, string model) => 
+            _carGuideAPIService.GetVehicle(year, make, model);
+
+
+        [HttpGet("vehicle/RequestedVehicleCriterias")]
+        public ActionResult<Vehicle> GetVehicleBasedOffCriteria(RequestedVehicleCriterias requestedVehicleCriterias)
+        {
+            List<Vehicle> vehicles = _carGuideAPIService.GetVehiclesBasedOffCategory(requestedVehicleCriterias);
+            Vehicle vehicle = new Vehicle();
+            
+            if(vehicles.Count() > 0)
+            {
+                vehicle = vehicles[0];
+            }
+            
+            
+            return vehicle;
+        }
+
+        //create a new httpget based off requestedvehiclecriterias
+        //returns a list of all the cars in that class
+        //now design an algorithm to get the best fit car based off the criteria
+        // returns the best fit vehicle
 
         [HttpPost("vehicle")]
         public ActionResult<Vehicle> CreateVehicle(Vehicle vehicle) =>_carGuideAPIService.CreateVehicle(vehicle);
@@ -59,13 +84,56 @@ namespace CarGuideServiceAPI.Controllers
         [HttpGet("vehiclereview/{id}")]
         public ActionResult<VehicleReview> GetVehicleReview(string id) => _carGuideAPIService.GetVehicleReview(id);
 
+        [HttpGet("vehiclereview/user")]
+        public ActionResult <List<VehicleReview>> GetVehicleReviewsOfUser(string username) => _carGuideAPIService.GetVehicleReviewsOfUser(username);
+
         [HttpPost("vehiclereview")]
-        public ActionResult<VehicleReview> CreateVehicleReview(VehicleReview vehicleReview) => 
+        public ActionResult<VehicleReview> CreateVehicleReview(VehicleReview vehicleReview)
+        {
             _carGuideAPIService.CreateVehicleReview(vehicleReview);
+            Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
+            vehicle.NumberOfReviews++;
+            vehicle.FuelEfficiency = (vehicle.FuelEfficiency + vehicleReview.FuelEfficiency)/ vehicle.NumberOfReviews;
+            vehicle.Power = (vehicle.Power + vehicleReview.Power) / vehicle.NumberOfReviews;
+            vehicle.Handling = (vehicle.Handling + vehicleReview.Handling) / vehicle.NumberOfReviews;
+            vehicle.Safety = (vehicle.Safety + vehicleReview.Safety) / vehicle.NumberOfReviews;
+            vehicle.Reliability = (vehicle.Reliability + vehicleReview.Reliability) / vehicle.NumberOfReviews;
+            vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse + vehicleReview.SteeringFeelAndResponse) / vehicle.NumberOfReviews;
+            vehicle.ComfortLevel = (vehicle.ComfortLevel + vehicleReview.ComfortLevel) / vehicle.NumberOfReviews;
+            vehicle.RideQuality = (vehicle.RideQuality + vehicleReview.RideQuality) / vehicle.NumberOfReviews;
+            vehicle.BuildQuality = (vehicle.BuildQuality + vehicleReview.BuildQuality) / vehicle.NumberOfReviews;
+            vehicle.Technology = (vehicle.Technology + vehicleReview.Technology) / vehicle.NumberOfReviews;
+            vehicle.Styling = (vehicle.Styling + vehicleReview.Styling) / vehicle.NumberOfReviews;
+            vehicle.ResaleValue = (vehicle.ResaleValue + vehicleReview.ResaleValue) / vehicle.NumberOfReviews;
+            
+            _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
+            return vehicleReview;
+        }
 
         [HttpDelete("vehiclereview/{id}")]
-        public ActionResult<string> DeleteVehicleReview(string id) => 
+        public ActionResult<string> DeleteVehicleReview(string id)
+        {
+            VehicleReview vehicleReview = _carGuideAPIService.GetVehicleReview(id);
             _carGuideAPIService.RemoveVehicleReview(id);
+            Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
+            vehicle.NumberOfReviews--;
+            vehicle.FuelEfficiency = (vehicle.FuelEfficiency - vehicleReview.FuelEfficiency) / vehicle.NumberOfReviews;
+            vehicle.Power = (vehicle.Power - vehicleReview.Power) / vehicle.NumberOfReviews;
+            vehicle.Handling = (vehicle.Handling - vehicleReview.Handling) / vehicle.NumberOfReviews;
+            vehicle.Safety = (vehicle.Safety - vehicleReview.Safety) / vehicle.NumberOfReviews;
+            vehicle.Reliability = (vehicle.Reliability - vehicleReview.Reliability) / vehicle.NumberOfReviews;
+            vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse - vehicleReview.SteeringFeelAndResponse) / vehicle.NumberOfReviews;
+            vehicle.ComfortLevel = (vehicle.ComfortLevel - vehicleReview.ComfortLevel) / vehicle.NumberOfReviews;
+            vehicle.RideQuality = (vehicle.RideQuality - vehicleReview.RideQuality) / vehicle.NumberOfReviews;
+            vehicle.BuildQuality = (vehicle.BuildQuality - vehicleReview.BuildQuality) / vehicle.NumberOfReviews;
+            vehicle.Technology = (vehicle.Technology - vehicleReview.Technology) / vehicle.NumberOfReviews;
+            vehicle.Styling = (vehicle.Styling - vehicleReview.Styling) / vehicle.NumberOfReviews;
+            vehicle.ResaleValue = (vehicle.ResaleValue - vehicleReview.ResaleValue) / vehicle.NumberOfReviews;
+
+            _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
+            return id;
+        }
+            
 
         #endregion VehicleReview
 
@@ -75,21 +143,68 @@ namespace CarGuideServiceAPI.Controllers
         public ActionResult<List<User>> GetAllUsers() => _carGuideAPIService.GetAllUsers();
 
         [HttpGet("user/{username}")]
-        public ActionResult<User> GetUser(string username) => _carGuideAPIService.GetUser(username);
+        public ActionResult<User> GetUser(string username) => _carGuideAPIService.GetUserByUserName(username);
 
         [HttpPost("user")]
-        public ActionResult<User> CreateUser(User user) => _carGuideAPIService.CreateUser(user);
+        public ActionResult<string> CreateUser(User user)
+        {
+            if(!_carGuideAPIService.UserNameExists(user.UserName) && !_carGuideAPIService.EmailExists(user.Email))
+            {
+                _carGuideAPIService.CreateUser(user);
+                return "Created User";
+            }
+            
+
+            return "Username or Email Already Exists";
+        }
 
         [HttpPut("user/{username}")]
-        public ActionResult<User> UpdateUser(string username, User user) => _carGuideAPIService.UpdateUser(username, user);
+        public ActionResult<string> UpdateUser(string username, User user)
+        {
+            if(_carGuideAPIService.UserNameExists(username))
+            {
+                _carGuideAPIService.UpdateUser(username, user);
+                return "Updated User";
+            }
+            
+            return "Username Not Found";
+        }
+
 
         [HttpDelete("user/{username}")]
-        public ActionResult<string> RemoveUser(string username) => _carGuideAPIService.RemoveUser(username);
+        public ActionResult<string> RemoveUser(string username)
+        {
+            if (_carGuideAPIService.UserNameExists(username))
+            {
+                _carGuideAPIService.RemoveUser(username);
+                return "Deleted User";
+            }
+
+            return "Username Not Found";
+        }
 
         #endregion User
 
 
+        [HttpGet("user/exists/username/{username}")]
+        public ActionResult<bool> UserNameExists(string username) =>
+            _carGuideAPIService.UserNameExists(username);
 
+        [HttpGet("user/exists/email/{email}")]
+        public ActionResult<bool> EmailExists(string email) =>
+            _carGuideAPIService.EmailExists(email);
+
+        [HttpPost("user/login")]
+        public ActionResult<string> LoginUser(string username, string password)
+        {
+            if(_carGuideAPIService.LoginUser(username, password))
+            {
+                return "Logged In Successfully";
+            }
+
+            return "Incorrect Username or Password";
+        }
+            
 
 
 

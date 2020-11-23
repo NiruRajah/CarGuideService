@@ -37,8 +37,21 @@ namespace CarGuideServiceAPI.Services
 
         public List<Vehicle> GetAllVehicles() => _vehicles.Find(v => true).ToList();
 
-        public Vehicle GetVehicle(string id) =>
-            _vehicles.Find(v => v.Id == id).FirstOrDefault();
+        /*public Vehicle GetVehicle(string id) =>
+            _vehicles.Find(v => v.Id == id).FirstOrDefault();*/
+
+        public Vehicle GetVehicle(int year, string make, string model) =>
+            _vehicles.Find(v => v.Year == year && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
+
+        public List<Vehicle> GetVehiclesBasedOffCategory(RequestedVehicleCriterias requestedVehicleCriterias)
+        {
+            List<Vehicle> vehicles = _vehicles.Find(v => v.Year == requestedVehicleCriterias.Year
+                                               && v.LuxuryLevel == requestedVehicleCriterias.LuxuryLevel
+                                               && v.Size == requestedVehicleCriterias.Size
+                                               && v.Type == requestedVehicleCriterias.Type
+                                               && v.PriceRange == requestedVehicleCriterias.PriceRange).ToList();
+            return vehicles;
+        }
 
         public Vehicle CreateVehicle(Vehicle vehicle)
         {
@@ -66,6 +79,9 @@ namespace CarGuideServiceAPI.Services
         public VehicleReview GetVehicleReview(string id) =>
             _vehicleReviews.Find(v => v.Id == id).FirstOrDefault();
 
+        public List<VehicleReview> GetVehicleReviewsOfUser(string username) =>
+            _vehicleReviews.Find(v => v.UserName.Equals(username)).ToList();
+
         public VehicleReview CreateVehicleReview (VehicleReview vehicleReview)
         {
             _vehicleReviews.InsertOne(vehicleReview);
@@ -82,8 +98,11 @@ namespace CarGuideServiceAPI.Services
         public List<User> GetAllUsers() =>
             _users.Find(u => true).ToList();
 
-        public User GetUser(string userName) =>
+        public User GetUserByUserName(string userName) =>
             _users.Find(u => u.UserName.Equals(userName)).FirstOrDefault();
+
+        public User GetUserByEmail(string email) =>
+            _users.Find(u => u.Email.Equals(email)).FirstOrDefault();
 
         public User CreateUser(User user)
         {
@@ -103,7 +122,41 @@ namespace CarGuideServiceAPI.Services
             return userName;
 
         }
-            
+
+        public bool UserNameExists(string username)
+        {
+            User userInDb = GetUserByUserName(username);
+            if (userInDb == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool EmailExists(string email)
+        {
+            User userInDb = GetUserByEmail(email);
+            if (userInDb == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool LoginUser(string username, string password)
+        {
+            User userInDb = GetUserByUserName(username);
+            if (userInDb == null)
+            {
+                return false;
+            }
+            else if(userInDb.UserName.Equals(username) && userInDb.Password.Equals(password))
+            {
+                return true;
+            }
+
+            return false;
+        }
 
 
         /*

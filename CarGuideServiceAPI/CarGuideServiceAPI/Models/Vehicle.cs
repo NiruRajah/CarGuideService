@@ -53,7 +53,7 @@ namespace CarGuideServiceAPI.Models
 
         public double ResaleValue { get; set; }
 
-
+        public int NumberOfReviews { get; set; }
     }
 
 
