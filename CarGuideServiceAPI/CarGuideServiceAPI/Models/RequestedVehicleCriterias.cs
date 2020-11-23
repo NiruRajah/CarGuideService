@@ -9,9 +9,6 @@ namespace CarGuideServiceAPI.Models
 {
     public class RequestedVehicleCriterias
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
 
         public int Year { get; set; }
 

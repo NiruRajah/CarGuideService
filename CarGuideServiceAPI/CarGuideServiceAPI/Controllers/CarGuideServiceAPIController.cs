@@ -49,7 +49,7 @@ namespace CarGuideServiceAPI.Controllers
             _carGuideAPIService.GetVehicle(year, make, model);
 
 
-        [HttpGet("vehicle/RequestedVehicleCriterias")]
+        [HttpPost("vehicle/criterias")]
         public ActionResult<Vehicle> GetVehicleBasedOffCriteria(RequestedVehicleCriterias requestedVehicleCriterias)
         {
             List<Vehicle> vehicles = _carGuideAPIService.GetVehiclesBasedOffCategory(requestedVehicleCriterias);
@@ -59,7 +59,7 @@ namespace CarGuideServiceAPI.Controllers
             {
                 vehicle = vehicles[0];
             }
-            
+            // This is where you need to put the algorithm in effect to determine the best suitable car based off the criterias
             
             return vehicle;
         }
