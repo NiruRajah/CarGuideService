@@ -266,10 +266,10 @@ namespace CarGuideServiceAPI.Controllers
             return "Incorrect Username or Password";
         }
 
-        [HttpGet("dataapi")]
-        public async Task<string> CallDataAPIMaintenanceInfo(string year, string make, string model, string mileage)
+        [HttpGet("dataapi/maintenance")]
+        public async Task<string> CallDataAPIMaintenanceInfo(string year, string make, string model)
         {
-            string url = "https://api.carmd.com/v3.0/maint?year=" + year + "&make=" + make + "&model=" + model + "&mileage=" + mileage;
+            string url = "https://api.carmd.com/v3.0/maintlist?year=" + year + "&make=" + make + "&model=" + model;
             using (var client = new HttpClient())
             {
                 var request = new HttpRequestMessage
@@ -297,62 +297,69 @@ namespace CarGuideServiceAPI.Controllers
             }
         }
 
-
-        /*
-         [HttpGet]
-        public ActionResult<List<Book>> Get() =>
-            _bookService.Get();
-
-        [HttpGet("{id:length(24)}", Name = "GetBook")]
-        public ActionResult<Book> Get(string id)
+        [HttpGet("dataapi/recall")]
+        public async Task<string> CallDataAPIRecallInfo(string year, string make, string model)
         {
-            var book = _bookService.Get(id);
-
-            if (book == null)
+            string url = "https://api.carmd.com/v3.0/recall?year=" + year + "&make=" + make + "&model=" + model;
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(url),
+                    //Content = new StringContent(JsonConvert.SerializeObject())
+                };
+                string contentType = "application/json";
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+                var authPassword = "ZjM3YmY0OGMtNzJkNy00MmY0LTgzYTQtZGIyY2UxNjdmZWRj";
+                client.DefaultRequestHeaders.Add("Authorization", String.Format("Basic {0}", authPassword));
+                var partnerTokenValue = "5e6583fe22c146f98a7a74a86c57351a";
+                client.DefaultRequestHeaders.Add("partner-token", partnerTokenValue);
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                //string jsonString = JsonConvert.DeserializeObject<string>(responseBody);
+
+                var jObj = JObject.Parse(responseBody);
+                string jObjString = jObj.ToString();
+                return jObjString;
             }
-
-            return book;
         }
 
-        [HttpPost]
-        public ActionResult<Book> Create(Book book)
+
+        [HttpGet("dataapi/warranty")]
+        public async Task<string> CallDataAPIWarrantyInfo(string year, string make, string model)
         {
-            _bookService.Create(book);
-
-            return CreatedAtRoute("GetBook", new { id = book.Id.ToString() }, book);
-        }
-
-        [HttpPut("{id:length(24)}")]
-        public IActionResult Update(string id, Book bookIn)
-        {
-            var book = _bookService.Get(id);
-
-            if (book == null)
+            string url = "https://api.carmd.com/v3.0/warranty?year=" + year + "&make=" + make + "&model=" + model;
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(url),
+                    //Content = new StringContent(JsonConvert.SerializeObject())
+                };
+                string contentType = "application/json";
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+                var authPassword = "ZjM3YmY0OGMtNzJkNy00MmY0LTgzYTQtZGIyY2UxNjdmZWRj";
+                client.DefaultRequestHeaders.Add("Authorization", String.Format("Basic {0}", authPassword));
+                var partnerTokenValue = "5e6583fe22c146f98a7a74a86c57351a";
+                client.DefaultRequestHeaders.Add("partner-token", partnerTokenValue);
+                var response = await client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                //string jsonString = JsonConvert.DeserializeObject<string>(responseBody);
+
+                var jObj = JObject.Parse(responseBody);
+                string jObjString = jObj.ToString();
+                return jObjString;
             }
-
-            _bookService.Update(id, bookIn);
-
-            return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public IActionResult Delete(string id)
-        {
-            var book = _bookService.Get(id);
-
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            _bookService.Remove(book.Id);
-
-            return NoContent();
-        }
-         */
+        
     }
 }
