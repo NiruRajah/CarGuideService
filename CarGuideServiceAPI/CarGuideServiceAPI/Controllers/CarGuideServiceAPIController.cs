@@ -76,7 +76,21 @@ namespace CarGuideServiceAPI.Controllers
         public ActionResult<Vehicle> UpdateVehicle(string id, Vehicle vehicle) => _carGuideAPIService.UpdateVehicle(id, vehicle);
 
         [HttpDelete("vehicle/{id}")]
-        public ActionResult<string> DeleteVehicle(string id) => _carGuideAPIService.RemoveVehicle(id);
+        public ActionResult<string> DeleteVehicle(string id)
+        {
+            Vehicle vehicle = _carGuideAPIService.GetVehicleById(id);
+            if(vehicle == null)
+            {
+                return "Invalid Id: " + id;
+            }
+            else
+            {
+                _carGuideAPIService.RemoveVehicle(id);
+                _carGuideAPIService.RemoveVehicleReviewsOfVehicle(vehicle.Year, vehicle.Make, vehicle.Model);
+            }
+
+            return "Deleted Vehicle ID: " + id;
+        }
 
         #endregion Vehicle
 
@@ -92,59 +106,87 @@ namespace CarGuideServiceAPI.Controllers
         [HttpGet("vehiclereview/user")]
         public ActionResult <List<VehicleReview>> GetVehicleReviewsOfUser(string username) => _carGuideAPIService.GetVehicleReviewsOfUser(username);
 
+        [HttpGet("vehiclereview/vehicle")]
+        public ActionResult<List<VehicleReview>> GetVehicleReviewsOfVehicle(int year, string make, string model) => 
+            _carGuideAPIService.GetVehicleReviewsOfVehicle(year, make, model);
+
         [HttpPost("vehiclereview")]
-        public ActionResult<VehicleReview> CreateVehicleReview(VehicleReview vehicleReview)
+        public ActionResult<string> CreateVehicleReview(VehicleReview vehicleReview)
         {
-            _carGuideAPIService.CreateVehicleReview(vehicleReview);
-            Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
-            vehicle.NumberOfReviews++;
-            vehicle.FuelEfficiency = (vehicle.FuelEfficiency + vehicleReview.FuelEfficiency)/ vehicle.NumberOfReviews;
-            vehicle.Power = (vehicle.Power + vehicleReview.Power) / vehicle.NumberOfReviews;
-            vehicle.Handling = (vehicle.Handling + vehicleReview.Handling) / vehicle.NumberOfReviews;
-            vehicle.Safety = (vehicle.Safety + vehicleReview.Safety) / vehicle.NumberOfReviews;
-            vehicle.Reliability = (vehicle.Reliability + vehicleReview.Reliability) / vehicle.NumberOfReviews;
-            vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse + vehicleReview.SteeringFeelAndResponse) / vehicle.NumberOfReviews;
-            vehicle.ComfortLevel = (vehicle.ComfortLevel + vehicleReview.ComfortLevel) / vehicle.NumberOfReviews;
-            vehicle.RideQuality = (vehicle.RideQuality + vehicleReview.RideQuality) / vehicle.NumberOfReviews;
-            vehicle.BuildQuality = (vehicle.BuildQuality + vehicleReview.BuildQuality) / vehicle.NumberOfReviews;
-            vehicle.Technology = (vehicle.Technology + vehicleReview.Technology) / vehicle.NumberOfReviews;
-            vehicle.Styling = (vehicle.Styling + vehicleReview.Styling) / vehicle.NumberOfReviews;
-            vehicle.ResaleValue = (vehicle.ResaleValue + vehicleReview.ResaleValue) / vehicle.NumberOfReviews;
+            if(_carGuideAPIService.UserNameExists(vehicleReview.UserName) && _carGuideAPIService.VehicleExists(vehicleReview))
+            {
+                VehicleReview createdVR = _carGuideAPIService.CreateVehicleReview(vehicleReview);
+                Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
+                vehicle.NumberOfReviews++;
+                vehicle.FuelEfficiency = (vehicle.FuelEfficiency * (vehicle.NumberOfReviews - 1) + vehicleReview.FuelEfficiency) / vehicle.NumberOfReviews;
+                vehicle.Power = (vehicle.Power * (vehicle.NumberOfReviews - 1) + vehicleReview.Power) / vehicle.NumberOfReviews;
+                vehicle.Handling = (vehicle.Handling * (vehicle.NumberOfReviews - 1) + vehicleReview.Handling) / vehicle.NumberOfReviews;
+                vehicle.Safety = (vehicle.Safety * (vehicle.NumberOfReviews - 1) + vehicleReview.Safety) / vehicle.NumberOfReviews;
+                vehicle.Reliability = (vehicle.Reliability * (vehicle.NumberOfReviews - 1) + vehicleReview.Reliability) / vehicle.NumberOfReviews;
+                vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse * (vehicle.NumberOfReviews - 1) + vehicleReview.SteeringFeelAndResponse) / vehicle.NumberOfReviews;
+                vehicle.ComfortLevel = (vehicle.ComfortLevel * (vehicle.NumberOfReviews - 1) + vehicleReview.ComfortLevel) / vehicle.NumberOfReviews;
+                vehicle.RideQuality = (vehicle.RideQuality * (vehicle.NumberOfReviews - 1) + vehicleReview.RideQuality) / vehicle.NumberOfReviews;
+                vehicle.BuildQuality = (vehicle.BuildQuality * (vehicle.NumberOfReviews - 1) + vehicleReview.BuildQuality) / vehicle.NumberOfReviews;
+                vehicle.Technology = (vehicle.Technology * (vehicle.NumberOfReviews - 1) + vehicleReview.Technology) / vehicle.NumberOfReviews;
+                vehicle.Styling = (vehicle.Styling * (vehicle.NumberOfReviews - 1) + vehicleReview.Styling) / vehicle.NumberOfReviews;
+                vehicle.ResaleValue = (vehicle.ResaleValue * (vehicle.NumberOfReviews - 1) + vehicleReview.ResaleValue) / vehicle.NumberOfReviews;
+
+                _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
+                return "Review Created ID: " + createdVR.Id;
+            }
             
-            _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
-            return vehicleReview;
+            return "Invalid Username Or Vehicle Info";
         }
 
         [HttpDelete("vehiclereview/{id}")]
         public ActionResult<string> DeleteVehicleReview(string id)
         {
             VehicleReview vehicleReview = _carGuideAPIService.GetVehicleReview(id);
-            _carGuideAPIService.RemoveVehicleReview(id);
-            Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
-            vehicle.NumberOfReviews--;
-            vehicle.FuelEfficiency = (vehicle.FuelEfficiency - vehicleReview.FuelEfficiency) / vehicle.NumberOfReviews;
-            vehicle.Power = (vehicle.Power - vehicleReview.Power) / vehicle.NumberOfReviews;
-            vehicle.Handling = (vehicle.Handling - vehicleReview.Handling) / vehicle.NumberOfReviews;
-            vehicle.Safety = (vehicle.Safety - vehicleReview.Safety) / vehicle.NumberOfReviews;
-            vehicle.Reliability = (vehicle.Reliability - vehicleReview.Reliability) / vehicle.NumberOfReviews;
-            vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse - vehicleReview.SteeringFeelAndResponse) / vehicle.NumberOfReviews;
-            vehicle.ComfortLevel = (vehicle.ComfortLevel - vehicleReview.ComfortLevel) / vehicle.NumberOfReviews;
-            vehicle.RideQuality = (vehicle.RideQuality - vehicleReview.RideQuality) / vehicle.NumberOfReviews;
-            vehicle.BuildQuality = (vehicle.BuildQuality - vehicleReview.BuildQuality) / vehicle.NumberOfReviews;
-            vehicle.Technology = (vehicle.Technology - vehicleReview.Technology) / vehicle.NumberOfReviews;
-            vehicle.Styling = (vehicle.Styling - vehicleReview.Styling) / vehicle.NumberOfReviews;
-            vehicle.ResaleValue = (vehicle.ResaleValue - vehicleReview.ResaleValue) / vehicle.NumberOfReviews;
+            if(vehicleReview == null)
+            {
+                return "Invalid ID: " + id;
+            }
+            else
+            {
+                _carGuideAPIService.RemoveVehicleReview(id);
+                Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
+                if(vehicle != null)
+                {
+                    vehicle.NumberOfReviews--;
+                    vehicle.FuelEfficiency = (vehicle.FuelEfficiency * (vehicle.NumberOfReviews + 1) - vehicleReview.FuelEfficiency) / vehicle.NumberOfReviews;
+                    vehicle.Power = (vehicle.Power * (vehicle.NumberOfReviews + 1) - vehicleReview.Power) / vehicle.NumberOfReviews;
+                    vehicle.Handling = (vehicle.Handling * (vehicle.NumberOfReviews + 1) - vehicleReview.Handling) / vehicle.NumberOfReviews;
+                    vehicle.Safety = (vehicle.Safety * (vehicle.NumberOfReviews + 1) - vehicleReview.Safety) / vehicle.NumberOfReviews;
+                    vehicle.Reliability = (vehicle.Reliability * (vehicle.NumberOfReviews + 1) - vehicleReview.Reliability) / vehicle.NumberOfReviews;
+                    vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse * (vehicle.NumberOfReviews + 1) - vehicleReview.SteeringFeelAndResponse) / vehicle.NumberOfReviews;
+                    vehicle.ComfortLevel = (vehicle.ComfortLevel * (vehicle.NumberOfReviews + 1) - vehicleReview.ComfortLevel) / vehicle.NumberOfReviews;
+                    vehicle.RideQuality = (vehicle.RideQuality * (vehicle.NumberOfReviews + 1) - vehicleReview.RideQuality) / vehicle.NumberOfReviews;
+                    vehicle.BuildQuality = (vehicle.BuildQuality * (vehicle.NumberOfReviews + 1) - vehicleReview.BuildQuality) / vehicle.NumberOfReviews;
+                    vehicle.Technology = (vehicle.Technology * (vehicle.NumberOfReviews + 1) - vehicleReview.Technology) / vehicle.NumberOfReviews;
+                    vehicle.Styling = (vehicle.Styling * (vehicle.NumberOfReviews + 1) - vehicleReview.Styling) / vehicle.NumberOfReviews;
+                    vehicle.ResaleValue = (vehicle.ResaleValue * (vehicle.NumberOfReviews + 1) - vehicleReview.ResaleValue) / vehicle.NumberOfReviews;
 
-            _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
-            return id;
-        }
+                    _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
+                }
+                
+                return "Deleted Vehicle Review ID: " + id;
+            }
             
+        }
+
+        [HttpDelete("vehiclereview/vehicle")]
+        public ActionResult<string> DeleteVehicleReviewsOfVehicle(int year, string make, string model)
+        {
+            string result = _carGuideAPIService.RemoveVehicleReviewsOfVehicle(year, make, model);
+            return result;
+        }
+
 
         #endregion VehicleReview
 
 
         #region User
-        [HttpGet("user")]
+        [HttpGet("user/all")]
         public ActionResult<List<User>> GetAllUsers() => _carGuideAPIService.GetAllUsers();
 
         [HttpGet("user/{username}")]

@@ -37,8 +37,8 @@ namespace CarGuideServiceAPI.Services
 
         public List<Vehicle> GetAllVehicles() => _vehicles.Find(v => true).ToList();
 
-        /*public Vehicle GetVehicle(string id) =>
-            _vehicles.Find(v => v.Id == id).FirstOrDefault();*/
+        public Vehicle GetVehicleById(string id) =>
+            _vehicles.Find(v => v.Id == id).FirstOrDefault();
 
         public Vehicle GetVehicle(int year, string make, string model) =>
             _vehicles.Find(v => v.Year == year && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
@@ -82,6 +82,9 @@ namespace CarGuideServiceAPI.Services
         public List<VehicleReview> GetVehicleReviewsOfUser(string username) =>
             _vehicleReviews.Find(v => v.UserName.Equals(username)).ToList();
 
+        public List<VehicleReview> GetVehicleReviewsOfVehicle(int year, string make, string model) =>
+            _vehicleReviews.Find(v => v.Year == year && v.Make.Equals(make) && v.Model.Equals(model)).ToList();
+
         public VehicleReview CreateVehicleReview (VehicleReview vehicleReview)
         {
             _vehicleReviews.InsertOne(vehicleReview);
@@ -92,6 +95,52 @@ namespace CarGuideServiceAPI.Services
         {
             _vehicleReviews.DeleteOne(v => v.Id == id);
             return id;
+        }
+
+        public string RemoveVehicleReviewsOfVehicle(int year, string make, string model)
+        {
+            List<VehicleReview> vehicleReviews = GetVehicleReviewsOfVehicle(year, make, model);
+            if (vehicleReviews.Count() == 0)
+            {
+                return "No Reviews Exist For This Vehicle";
+            }
+            else
+            {
+                for (int i = 0; i < vehicleReviews.Count(); i++)
+                {
+                    RemoveVehicleReview(vehicleReviews[i].Id);
+                    Vehicle vehicle = GetVehicle(vehicleReviews[i].Year, vehicleReviews[i].Make, vehicleReviews[i].Model);
+                    if (vehicle != null)
+                    {
+                        vehicle.NumberOfReviews--;
+                        vehicle.FuelEfficiency = (vehicle.FuelEfficiency * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].FuelEfficiency) / vehicle.NumberOfReviews;
+                        vehicle.Power = (vehicle.Power * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Power) / vehicle.NumberOfReviews;
+                        vehicle.Handling = (vehicle.Handling * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Handling) / vehicle.NumberOfReviews;
+                        vehicle.Safety = (vehicle.Safety * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Safety) / vehicle.NumberOfReviews;
+                        vehicle.Reliability = (vehicle.Reliability * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Reliability) / vehicle.NumberOfReviews;
+                        vehicle.SteeringFeelAndResponse = (vehicle.SteeringFeelAndResponse * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].SteeringFeelAndResponse) / vehicle.NumberOfReviews;
+                        vehicle.ComfortLevel = (vehicle.ComfortLevel * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].ComfortLevel) / vehicle.NumberOfReviews;
+                        vehicle.RideQuality = (vehicle.RideQuality * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].RideQuality) / vehicle.NumberOfReviews;
+                        vehicle.BuildQuality = (vehicle.BuildQuality * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].BuildQuality) / vehicle.NumberOfReviews;
+                        vehicle.Technology = (vehicle.Technology * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Technology) / vehicle.NumberOfReviews;
+                        vehicle.Styling = (vehicle.Styling * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Styling) / vehicle.NumberOfReviews;
+                        vehicle.ResaleValue = (vehicle.ResaleValue * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].ResaleValue) / vehicle.NumberOfReviews;
+
+                        UpdateVehicle(vehicle.Id, vehicle);
+                    }
+                }
+            }
+            return "Deleted Vehicle Reviews Of The Vehicle: " + year + " " + make + " " + model;
+        }
+
+        public bool VehicleExists(VehicleReview vehicleReview)
+        {
+            Vehicle vehicleInDb = GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
+            if (vehicleInDb == null)
+            {
+                return false;
+            }
+            return true;
         }
             
 
