@@ -70,7 +70,16 @@ namespace CarGuideServiceAPI.Controllers
         // returns the best fit vehicle
 
         [HttpPost("vehicle")]
-        public ActionResult<Vehicle> CreateVehicle(Vehicle vehicle) =>_carGuideAPIService.CreateVehicle(vehicle);
+        public ActionResult<string> CreateVehicle(Vehicle vehicle)
+        {
+            if (!_carGuideAPIService.VehicleExists(vehicle.Year, vehicle.Make, vehicle.Model))
+            {
+                Vehicle createdVehicle = _carGuideAPIService.CreateVehicle(vehicle);
+                return "Created Vehicle ID: " + createdVehicle.Id;
+            }
+            
+            return "Vehicle Already Exists";
+        }
 
         [HttpPut("vehicle/{id}")]
         public ActionResult<Vehicle> UpdateVehicle(string id, Vehicle vehicle) => _carGuideAPIService.UpdateVehicle(id, vehicle);
@@ -113,7 +122,12 @@ namespace CarGuideServiceAPI.Controllers
         [HttpPost("vehiclereview")]
         public ActionResult<string> CreateVehicleReview(VehicleReview vehicleReview)
         {
-            if(_carGuideAPIService.UserNameExists(vehicleReview.UserName) && _carGuideAPIService.VehicleExists(vehicleReview))
+            if(_carGuideAPIService.UserAlreadyCreatedReviewForVehicleExists(vehicleReview))
+            {
+                return vehicleReview.UserName + " has already made a review for the " + vehicleReview.Year + " " + vehicleReview.Make + " " + vehicleReview.Model;
+            }
+
+            if(_carGuideAPIService.UserNameExists(vehicleReview.UserName) && _carGuideAPIService.VehicleExists(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model))
             {
                 VehicleReview createdVR = _carGuideAPIService.CreateVehicleReview(vehicleReview);
                 Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);

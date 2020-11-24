@@ -71,7 +71,17 @@ namespace CarGuideServiceAPI.Services
             _vehicles.DeleteOne(v => v.Id == id);
             return id;
         }
-            
+
+        public bool VehicleExists(int year, string make, string model)
+        {
+            Vehicle vehicleInDb = GetVehicle(year, make, model);
+            if (vehicleInDb == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
 
         public List<VehicleReview> GetAllVehicleReviews() =>
             _vehicleReviews.Find(v => true).ToList();
@@ -133,15 +143,21 @@ namespace CarGuideServiceAPI.Services
             return "Deleted Vehicle Reviews Of The Vehicle: " + year + " " + make + " " + model;
         }
 
-        public bool VehicleExists(VehicleReview vehicleReview)
+        public bool UserAlreadyCreatedReviewForVehicleExists(VehicleReview vehicleReview)
         {
-            Vehicle vehicleInDb = GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
-            if (vehicleInDb == null)
+            VehicleReview foundVReview = _vehicleReviews.Find(v => v.Year == vehicleReview.Year 
+                                                                && v.Make.Equals(vehicleReview.Make) 
+                                                                && v.Model.Equals(vehicleReview.Model) 
+                                                                && v.UserName.Equals(vehicleReview.UserName)).FirstOrDefault();
+            if(foundVReview == null)
             {
                 return false;
             }
+
             return true;
         }
+
+
             
 
         public List<User> GetAllUsers() =>
