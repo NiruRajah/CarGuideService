@@ -1,5 +1,6 @@
 ﻿using CarGuideServiceAPI.Models;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,9 @@ namespace CarGuideServiceAPI.Services
         private readonly IMongoCollection<Vehicle> _vehicles;
         private readonly IMongoCollection<VehicleReview> _vehicleReviews;
         private readonly IMongoCollection<User> _users;
-
-
+        private readonly IMongoCollection<Maintenance> _maintenances;
+        private readonly IMongoCollection<Recall> _recalls;
+        private readonly IMongoCollection<Warranty> _warrantys;
 
 
         public CarGuideServiceAPIService(ICarGuideServiceAPIDatabaseSettings settings)
@@ -22,11 +24,13 @@ namespace CarGuideServiceAPI.Services
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-           // _carGuideServiceAPIs = database.GetCollection<Shipwreck>("shipwrecks");
+            // _carGuideServiceAPIs = database.GetCollection<Shipwreck>("shipwrecks");
             _vehicles = database.GetCollection<Vehicle>("vehicles");
             _vehicleReviews = database.GetCollection<VehicleReview>("vehicleReviews");
             _users = database.GetCollection<User>("users");
-
+            _maintenances = database.GetCollection<Maintenance>("maintenances");
+            _recalls = database.GetCollection<Recall>("recalls");
+            _warrantys = database.GetCollection<Warranty>("warrantys");
 
         }
 
@@ -222,6 +226,42 @@ namespace CarGuideServiceAPI.Services
             }
 
             return false;
+        }
+
+
+
+        //public List<Maintenance> GetAllMaintenances() => _maintenances.Find(v => true).ToList();
+
+        public Maintenance GetMaintenanceOfVehicle(string year, string make, string model) =>
+            _maintenances.Find(v => v.Year.Equals(year) && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
+
+        public string CreateMaintenance(Maintenance maintenance)
+        {
+            _maintenances.InsertOne(maintenance);
+            return maintenance.MaintenanceInfo.ToString();
+        }
+
+        //public List<Recall> GetAllRecalls() => _recalls.Find(v => true).ToList();
+
+        public Recall GetRecallOfVehicle(string year, string make, string model) =>
+            _recalls.Find(v => v.Year.Equals(year) && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
+
+        public string CreateRecall(Recall recall)
+        {
+            _recalls.InsertOne(recall);
+            return recall.RecallInfo.ToString();
+        }
+
+        //public List<Warranty> GetAllWarrantys() => _warrantys.Find(v => true).ToList();
+
+        public Warranty GetWarrantyOfVehicle(string year, string make, string model) =>
+            _warrantys.Find(v => v.Year.Equals(year) && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
+
+
+        public string CreateWarranty(Warranty warranty)
+        {
+            _warrantys.InsertOne(warranty);
+            return warranty.WarrantyInfo.ToString();
         }
 
     }

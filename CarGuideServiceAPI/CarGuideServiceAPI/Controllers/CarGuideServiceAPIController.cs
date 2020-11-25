@@ -13,6 +13,10 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using MongoDB.Bson.IO;
+using MongoDB.Bson.Serialization;
+using System.Text;
 
 namespace CarGuideServiceAPI.Controllers
 {
@@ -269,6 +273,18 @@ namespace CarGuideServiceAPI.Controllers
         [HttpGet("dataapi/maintenance")]
         public async Task<string> CallDataAPIMaintenanceInfo(string year, string make, string model)
         {
+            Maintenance maintenance = new Maintenance();
+            maintenance = _carGuideAPIService.GetMaintenanceOfVehicle(year, make, model);
+
+            if (maintenance != null)
+            {
+                var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
+                JObject json = JObject.Parse(maintenance.MaintenanceInfo.ToJson(jsonWriterSettings));
+
+                return json.ToString();
+            }
+
+            maintenance = new Maintenance();
             string url = "https://api.carmd.com/v3.0/maintlist?year=" + year + "&make=" + make + "&model=" + model;
             using (var client = new HttpClient())
             {
@@ -293,13 +309,36 @@ namespace CarGuideServiceAPI.Controllers
 
                 var jObj = JObject.Parse(responseBody);
                 string jObjString = jObj.ToString();
+
+                if(response.IsSuccessStatusCode)
+                {
+                    maintenance.Year = year;
+                    maintenance.Make = make;
+                    maintenance.Model = model;
+                    maintenance.MaintenanceInfo = BsonDocument.Parse(jObjString);
+                    _carGuideAPIService.CreateMaintenance(maintenance);
+                }
+
                 return jObjString;
             }
         }
 
+
         [HttpGet("dataapi/recall")]
         public async Task<string> CallDataAPIRecallInfo(string year, string make, string model)
         {
+            Recall recall = new Recall();
+            recall = _carGuideAPIService.GetRecallOfVehicle(year, make, model);
+
+            if(recall != null)
+            {
+                var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
+                JObject json = JObject.Parse(recall.RecallInfo.ToJson(jsonWriterSettings));
+
+                return json.ToString();
+            }
+
+            recall = new Recall();
             string url = "https://api.carmd.com/v3.0/recall?year=" + year + "&make=" + make + "&model=" + model;
             using (var client = new HttpClient())
             {
@@ -324,6 +363,16 @@ namespace CarGuideServiceAPI.Controllers
 
                 var jObj = JObject.Parse(responseBody);
                 string jObjString = jObj.ToString();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    recall.Year = year;
+                    recall.Make = make;
+                    recall.Model = model;
+                    recall.RecallInfo = BsonDocument.Parse(jObjString);
+                    _carGuideAPIService.CreateRecall(recall);
+                }
+
                 return jObjString;
             }
         }
@@ -332,6 +381,18 @@ namespace CarGuideServiceAPI.Controllers
         [HttpGet("dataapi/warranty")]
         public async Task<string> CallDataAPIWarrantyInfo(string year, string make, string model)
         {
+            Warranty warranty = new Warranty();
+            warranty = _carGuideAPIService.GetWarrantyOfVehicle(year, make, model);
+
+            if(warranty != null)
+            {
+                var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict };
+                JObject json = JObject.Parse(warranty.WarrantyInfo.ToJson(jsonWriterSettings));
+                
+                return json.ToString();
+            }
+
+            warranty = new Warranty();
             string url = "https://api.carmd.com/v3.0/warranty?year=" + year + "&make=" + make + "&model=" + model;
             using (var client = new HttpClient())
             {
@@ -356,10 +417,28 @@ namespace CarGuideServiceAPI.Controllers
 
                 var jObj = JObject.Parse(responseBody);
                 string jObjString = jObj.ToString();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    warranty.Year = year;
+                    warranty.Make = make;
+                    warranty.Model = model;
+                    warranty.WarrantyInfo = BsonDocument.Parse(jObjString);
+                    _carGuideAPIService.CreateWarranty(warranty);
+                }
+
                 return jObjString;
             }
         }
+        /*
+        [HttpGet("dataapi/maintenance/all")]
+        public ActionResult<List<Maintenance>> GetAllMaintenances() => _carGuideAPIService.GetAllMaintenances();
 
-        
+        [HttpGet("dataapi/recall/all")]
+        public ActionResult<List<Recall>> GetAllRecalls() => _carGuideAPIService.GetAllRecalls();
+
+        [HttpGet("dataapi/warranty/all")]
+        public ActionResult<List<string>> GetAllWarrantys() => _carGuideAPIService.GetAllWarrantys();
+        */
     }
 }
