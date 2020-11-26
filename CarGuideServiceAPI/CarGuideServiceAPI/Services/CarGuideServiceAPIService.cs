@@ -48,23 +48,13 @@ namespace CarGuideServiceAPI.Services
         public Vehicle GetVehicle(int year, string make, string model) =>
             _vehicles.Find(v => v.Year == year && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
 
-        public List<Vehicle> GetVehiclesByCategory(int year, LuxuryLevel luxuryLevel, VehicleSize size, VehicleType type, PriceRange priceRange)
+        public List<Vehicle> GetVehiclesBasedOffCategory(RequestedVehicleCriterias requestedVehicleCriterias)
         {
-            List<Vehicle> vehicles = _vehicles.Find(v => v.Year == year
-                                               && v.LuxuryLevel == luxuryLevel
-                                               && v.Size == size
-                                               && v.Type == type
-                                               && v.PriceRange == priceRange).ToList();
-            return vehicles;
-        }
-
-        public List<Vehicle> GetVehiclesBasedOffCriterias(RequestedVehicleCriterias requestedVehicleCriterias)
-        {
-            List<Vehicle> vehicles = GetVehiclesByCategory(requestedVehicleCriterias.Year, 
-                                                           requestedVehicleCriterias.LuxuryLevel, 
-                                                           requestedVehicleCriterias.Size,
-                                                           requestedVehicleCriterias.Type,
-                                                           requestedVehicleCriterias.PriceRange);
+            List<Vehicle> vehicles = _vehicles.Find(v => v.Year == requestedVehicleCriterias.Year
+                                               && v.LuxuryLevel == requestedVehicleCriterias.LuxuryLevel
+                                               && v.Size == requestedVehicleCriterias.Size
+                                               && v.Type == requestedVehicleCriterias.Type
+                                               && v.PriceRange == requestedVehicleCriterias.PriceRange).ToList();
             return vehicles;
         }
 
