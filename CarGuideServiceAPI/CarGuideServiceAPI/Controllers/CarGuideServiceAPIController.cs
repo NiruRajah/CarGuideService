@@ -52,11 +52,18 @@ namespace CarGuideServiceAPI.Controllers
         public ActionResult<Vehicle> GetVehicle(int year, string make, string model) => 
             _carGuideAPIService.GetVehicle(year, make, model);
 
+        [HttpGet("vehicle/category")]
+        public ActionResult<List<Vehicle>> GetVehicleBasedOffCriteria(int year, LuxuryLevel luxuryLevel, VehicleSize size, VehicleType type, PriceRange priceRange)
+        {
+            List<Vehicle> vehicles = _carGuideAPIService.GetVehiclesByCategory(year, luxuryLevel, size, type, priceRange);
+
+            return vehicles;
+        }
 
         [HttpPost("vehicle/criterias")]
-        public ActionResult<Vehicle> GetVehicleBasedOffCriteria(RequestedVehicleCriterias requestedVehicleCriterias)
+        public ActionResult<Vehicle> GetVehicleBasedOffCriterias(RequestedVehicleCriterias requestedVehicleCriterias)
         {
-            List<Vehicle> vehicles = _carGuideAPIService.GetVehiclesBasedOffCategory(requestedVehicleCriterias);
+            List<Vehicle> vehicles = _carGuideAPIService.GetVehiclesBasedOffCriterias(requestedVehicleCriterias);
             Vehicle vehicle = new Vehicle();
             
             if(vehicles.Count() > 0)
