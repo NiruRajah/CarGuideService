@@ -188,7 +188,7 @@ namespace CarGuideServiceAPI.Controllers
             {
                 _carGuideAPIService.RemoveVehicleReview(id);
                 Vehicle vehicle = _carGuideAPIService.GetVehicle(vehicleReview.Year, vehicleReview.Make, vehicleReview.Model);
-                if(vehicle != null)
+                if(vehicle != null && vehicle.NumberOfReviews > 1)
                 {
                     vehicle.NumberOfReviews--;
                     vehicle.FuelEfficiency = (vehicle.FuelEfficiency * (vehicle.NumberOfReviews + 1) - vehicleReview.FuelEfficiency) / vehicle.NumberOfReviews;
@@ -206,7 +206,25 @@ namespace CarGuideServiceAPI.Controllers
 
                     _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
                 }
-                
+                else if (vehicle != null && vehicle.NumberOfReviews == 1)
+                {
+                    vehicle.NumberOfReviews--;
+                    vehicle.FuelEfficiency = 0;
+                    vehicle.Power = 0;
+                    vehicle.Handling = 0;
+                    vehicle.Safety = 0;
+                    vehicle.Reliability = 0;
+                    vehicle.SteeringFeelAndResponse = 0;
+                    vehicle.ComfortLevel = 0;
+                    vehicle.RideQuality = 0;
+                    vehicle.BuildQuality = 0;
+                    vehicle.Technology = 0;
+                    vehicle.Styling = 0;
+                    vehicle.ResaleValue = 0;
+
+                    _carGuideAPIService.UpdateVehicle(vehicle.Id, vehicle);
+                }
+
                 return "Deleted Vehicle Review ID: " + id;
             }
             

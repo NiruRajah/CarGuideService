@@ -205,7 +205,7 @@ namespace CarGuideServiceAPI.Services
                 {
                     RemoveVehicleReview(vehicleReviews[i].Id);
                     Vehicle vehicle = GetVehicle(vehicleReviews[i].Year, vehicleReviews[i].Make, vehicleReviews[i].Model);
-                    if (vehicle != null)
+                    if (vehicle != null && vehicle.NumberOfReviews > 1 )
                     {
                         vehicle.NumberOfReviews--;
                         vehicle.FuelEfficiency = (vehicle.FuelEfficiency * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].FuelEfficiency) / vehicle.NumberOfReviews;
@@ -220,6 +220,24 @@ namespace CarGuideServiceAPI.Services
                         vehicle.Technology = (vehicle.Technology * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Technology) / vehicle.NumberOfReviews;
                         vehicle.Styling = (vehicle.Styling * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].Styling) / vehicle.NumberOfReviews;
                         vehicle.ResaleValue = (vehicle.ResaleValue * (vehicle.NumberOfReviews + 1) - vehicleReviews[i].ResaleValue) / vehicle.NumberOfReviews;
+
+                        UpdateVehicle(vehicle.Id, vehicle);
+                    }
+                    else if(vehicle != null && vehicle.NumberOfReviews == 1)
+                    {
+                        vehicle.NumberOfReviews--;
+                        vehicle.FuelEfficiency = 0;
+                        vehicle.Power = 0;
+                        vehicle.Handling = 0;
+                        vehicle.Safety = 0;
+                        vehicle.Reliability = 0;
+                        vehicle.SteeringFeelAndResponse = 0;
+                        vehicle.ComfortLevel = 0;
+                        vehicle.RideQuality = 0;
+                        vehicle.BuildQuality = 0;
+                        vehicle.Technology = 0;
+                        vehicle.Styling = 0;
+                        vehicle.ResaleValue = 0;
 
                         UpdateVehicle(vehicle.Id, vehicle);
                     }
