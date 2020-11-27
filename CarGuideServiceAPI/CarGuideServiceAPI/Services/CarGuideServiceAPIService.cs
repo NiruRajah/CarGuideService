@@ -68,6 +68,76 @@ namespace CarGuideServiceAPI.Services
             return vehicles;
         }
 
+        public double GetScore(List<KeyValuePair<string, double>> vehicle, List<KeyValuePair<string, double>> requestCritierias)
+        {
+            double avg = 0;
+            double total = 0;
+            double length = vehicle.Count();
+            double weight = 0;
+
+            for (int i = 0; i < vehicle.Count(); i++)
+            {
+                if (vehicle[i].Value >= requestCritierias[i].Value)
+                {
+                    weight = 5 + (vehicle[i].Value - requestCritierias[i].Value);
+                }
+                else
+                {
+                    weight = 10 - (requestCritierias[i].Value - vehicle[i].Value);
+                    weight /= 2;
+                }
+
+                if(weight > 10)
+                {
+                    weight = 10;
+                }
+
+                total += weight * vehicle[i].Value;
+            }
+
+            avg = total / length;
+
+            return avg;
+        }
+
+        public List<KeyValuePair<string, double>> ConvertToKeyValuePairs(Type t, RequestedVehicleCriterias requestedVehicleCriterias, Vehicle vehicle)
+        {
+            var keyValuePairs = new List<KeyValuePair<string, double>>();
+
+            if ((requestedVehicleCriterias != null) && (t.Name.Equals("RequestedVehicleCriterias")))
+            {
+                keyValuePairs.Add(new KeyValuePair<string, double>("FuelEfficiency", requestedVehicleCriterias.FuelEfficiency));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Power", requestedVehicleCriterias.Power));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Handling", requestedVehicleCriterias.Handling));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Safety", requestedVehicleCriterias.Safety));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Reliability", requestedVehicleCriterias.Reliability));
+                keyValuePairs.Add(new KeyValuePair<string, double>("SteeringFeelAndResponse", requestedVehicleCriterias.SteeringFeelAndResponse));
+                keyValuePairs.Add(new KeyValuePair<string, double>("ComfortLevel", requestedVehicleCriterias.ComfortLevel));
+                keyValuePairs.Add(new KeyValuePair<string, double>("RideQuality", requestedVehicleCriterias.RideQuality));
+                keyValuePairs.Add(new KeyValuePair<string, double>("BuildQuality", requestedVehicleCriterias.BuildQuality));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Technology", requestedVehicleCriterias.Technology));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Styling", requestedVehicleCriterias.Styling));
+                keyValuePairs.Add(new KeyValuePair<string, double>("ResaleValue", requestedVehicleCriterias.ResaleValue));
+            }
+            else
+            {
+                keyValuePairs.Add(new KeyValuePair<string, double>("FuelEfficiency", vehicle.FuelEfficiency));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Power", vehicle.Power));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Handling", vehicle.Handling));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Safety", vehicle.Safety));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Reliability", vehicle.Reliability));
+                keyValuePairs.Add(new KeyValuePair<string, double>("SteeringFeelAndResponse", vehicle.SteeringFeelAndResponse));
+                keyValuePairs.Add(new KeyValuePair<string, double>("ComfortLevel", vehicle.ComfortLevel));
+                keyValuePairs.Add(new KeyValuePair<string, double>("RideQuality", vehicle.RideQuality));
+                keyValuePairs.Add(new KeyValuePair<string, double>("BuildQuality", vehicle.BuildQuality));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Technology", vehicle.Technology));
+                keyValuePairs.Add(new KeyValuePair<string, double>("Styling", vehicle.Styling));
+                keyValuePairs.Add(new KeyValuePair<string, double>("ResaleValue", vehicle.ResaleValue));
+            }
+
+            return keyValuePairs;
+        }
+
         public Vehicle CreateVehicle(Vehicle vehicle)
         {
             _vehicles.InsertOne(vehicle);

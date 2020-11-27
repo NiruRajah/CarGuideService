@@ -66,19 +66,32 @@ namespace CarGuideServiceAPI.Controllers
             List<Vehicle> vehicles = _carGuideAPIService.GetVehiclesBasedOffCriterias(requestedVehicleCriterias);
             Vehicle vehicle = new Vehicle();
             
-            if(vehicles.Count() > 0)
+            if(vehicles.Count() == 0)
             {
-                vehicle = vehicles[0];
+                return vehicle;
             }
-            // This is where you need to put the algorithm in effect to determine the best suitable car based off the criterias
-            
+
+            var requestedCriterias = new List<KeyValuePair<string, double>>();
+            Type t = typeof(RequestedVehicleCriterias);
+            requestedCriterias = _carGuideAPIService.ConvertToKeyValuePairs(t, requestedVehicleCriterias, null);
+
+            var vehicleIndexAndScoreList = new List<KeyValuePair<int, double>>();
+
+            for (int i = 0; i < vehicles.Count(); i++)
+            {
+                var localVehicle = new List<KeyValuePair<string, double>>();
+                Type localT = typeof(Vehicle);
+                localVehicle = _carGuideAPIService.ConvertToKeyValuePairs(localT, null, vehicles[i]);
+                double score = _carGuideAPIService.GetScore(localVehicle, requestedCriterias);
+                
+                vehicleIndexAndScoreList.Add(new KeyValuePair<int, double>(i, score));
+            }
+
+            vehicleIndexAndScoreList = vehicleIndexAndScoreList.OrderByDescending(y => y.Value).ToList();
+            vehicle = vehicles[vehicleIndexAndScoreList[0].Key];
+
             return vehicle;
         }
-
-        //create a new httpget based off requestedvehiclecriterias
-        //returns a list of all the cars in that class
-        //now design an algorithm to get the best fit car based off the criteria
-        // returns the best fit vehicle
 
         [HttpPost("vehicle")]
         public ActionResult<string> CreateVehicle(Vehicle vehicle)
