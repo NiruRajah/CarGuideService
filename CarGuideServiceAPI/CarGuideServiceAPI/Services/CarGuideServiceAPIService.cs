@@ -79,17 +79,17 @@ namespace CarGuideServiceAPI.Services
             {
                 if (vehicle[i].Value >= requestCritierias[i].Value)
                 {
-                    weight = 5 + (vehicle[i].Value - requestCritierias[i].Value);
+                    weight = 10 - (vehicle[i].Value - requestCritierias[i].Value);
+
+                    if (weight < 5)
+                    {
+                        weight = 5;
+                    }
+
                 }
                 else
                 {
-                    weight = 10 - (requestCritierias[i].Value - vehicle[i].Value);
-                    weight /= 2;
-                }
-
-                if(weight > 10)
-                {
-                    weight = 10;
+                    weight = 5 - 2 * (requestCritierias[i].Value - vehicle[i].Value);
                 }
 
                 total += weight * vehicle[i].Value;
