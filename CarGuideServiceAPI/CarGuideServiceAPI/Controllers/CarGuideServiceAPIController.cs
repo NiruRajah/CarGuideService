@@ -31,14 +31,6 @@ namespace CarGuideServiceAPI.Controllers
             _carGuideAPIService = carGuideServiceAPIService;
         }
 
-        /*[HttpGet("yo")]
-        public ActionResult<List<Shipwreck>> GetYo() =>
-            _carGuideAPIService.GetYo();
-
-        [HttpGet]
-        public ActionResult<List<Shipwreck>> Get() =>
-            _carGuideAPIService.Get();*/
-
 
         #region Vehicle
 
@@ -468,15 +460,6 @@ namespace CarGuideServiceAPI.Controllers
                 return jObjString;
             }
         }
-        /*
-        [HttpGet("dataapi/maintenance/all")]
-        public ActionResult<List<Maintenance>> GetAllMaintenances() => _carGuideAPIService.GetAllMaintenances();
-
-        [HttpGet("dataapi/recall/all")]
-        public ActionResult<List<Recall>> GetAllRecalls() => _carGuideAPIService.GetAllRecalls();
-
-        [HttpGet("dataapi/warranty/all")]
-        public ActionResult<List<string>> GetAllWarrantys() => _carGuideAPIService.GetAllWarrantys();
-        */
+        
     }
 }

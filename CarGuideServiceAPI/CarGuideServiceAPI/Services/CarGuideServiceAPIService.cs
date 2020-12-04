@@ -10,7 +10,6 @@ namespace CarGuideServiceAPI.Services
 {
     public class CarGuideServiceAPIService
     {
-        //private readonly IMongoCollection<Shipwreck> _carGuideServiceAPIs;
         private readonly IMongoCollection<Vehicle> _vehicles;
         private readonly IMongoCollection<VehicleReview> _vehicleReviews;
         private readonly IMongoCollection<User> _users;
@@ -24,7 +23,6 @@ namespace CarGuideServiceAPI.Services
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-            // _carGuideServiceAPIs = database.GetCollection<Shipwreck>("shipwrecks");
             _vehicles = database.GetCollection<Vehicle>("vehicles");
             _vehicleReviews = database.GetCollection<VehicleReview>("vehicleReviews");
             _users = database.GetCollection<User>("users");
@@ -33,12 +31,6 @@ namespace CarGuideServiceAPI.Services
             _warrantys = database.GetCollection<Warranty>("warrantys");
 
         }
-
-        /*public List<Shipwreck> GetYo() =>
-            _carGuideServiceAPIs.Find(s=> s.Featuretype == "Wrecks - Visible" && s.Chart == "US,U1,graph,DNC H1409860").ToList();
-
-        public List<Shipwreck> Get() =>
-            _carGuideServiceAPIs.Find(s => s.Featuretype == "Wrecks - Visible").ToList();*/
 
         public List<Vehicle> GetAllVehicles() => _vehicles.Find(v => true).ToList();
 
@@ -328,8 +320,6 @@ namespace CarGuideServiceAPI.Services
 
 
 
-        //public List<Maintenance> GetAllMaintenances() => _maintenances.Find(v => true).ToList();
-
         public Maintenance GetMaintenanceOfVehicle(string year, string make, string model) =>
             _maintenances.Find(v => v.Year.Equals(year) && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
 
@@ -339,7 +329,6 @@ namespace CarGuideServiceAPI.Services
             return maintenance.MaintenanceInfo.ToString();
         }
 
-        //public List<Recall> GetAllRecalls() => _recalls.Find(v => true).ToList();
 
         public Recall GetRecallOfVehicle(string year, string make, string model) =>
             _recalls.Find(v => v.Year.Equals(year) && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
@@ -350,7 +339,6 @@ namespace CarGuideServiceAPI.Services
             return recall.RecallInfo.ToString();
         }
 
-        //public List<Warranty> GetAllWarrantys() => _warrantys.Find(v => true).ToList();
 
         public Warranty GetWarrantyOfVehicle(string year, string make, string model) =>
             _warrantys.Find(v => v.Year.Equals(year) && v.Make.Equals(make) && v.Model.Equals(model)).FirstOrDefault();
